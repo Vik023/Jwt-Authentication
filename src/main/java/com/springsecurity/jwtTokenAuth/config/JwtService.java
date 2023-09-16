@@ -2,6 +2,7 @@ package com.springsecurity.jwtTokenAuth.config;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -28,7 +29,11 @@ public class JwtService {
 		return claimsResolver.apply(claims);
 	}
 	
-	public String generateToke(Map<String, Object> extraClaims, UserDetails userDetails) {
+	public String generateToken(UserDetails userDetails) {
+		return generateToken(new HashMap<>(), userDetails);
+	}
+	
+	public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
 		return Jwts
 				.builder()
 				.setClaims(extraClaims)

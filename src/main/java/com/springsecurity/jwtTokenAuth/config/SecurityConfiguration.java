@@ -3,6 +3,7 @@ package com.springsecurity.jwtTokenAuth.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -14,13 +15,17 @@ public class SecurityConfiguration {
 	@Autowired
 	private JwtAuthenticationFilter jwtAuthenticationFilter;
 	
+	@Autowired
+	public AuthenticationProvider authenticationProvider;
+	
+	@SuppressWarnings("removal")
 	@Bean
 	public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
 		http
 		.csrf()
 		.disable()
 		.authorizeHttpRequests()
-		.requestMatchers("")
+		.requestMatchers("/api/v1/auth/**")
 		.permitAll()
 		.anyRequest()
 		.authenticated()
@@ -28,7 +33,7 @@ public class SecurityConfiguration {
 		.sessionManagement()
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and()
-		.authenticationProvider(null)
+		.authenticationProvider(authenticationProvider)
 		.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		
 		return http.build();
